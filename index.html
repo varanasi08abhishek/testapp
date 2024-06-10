@@ -1,0 +1,2021 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Prognostic Trajectory</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.3/dist/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Bree+Serif&family=Caveat:wght@400;700&family=Lobster&family=Monoton&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display+SC:ital,wght@0,400;0,700;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,700&family=Work+Sans:ital,wght@0,400;0,700;1,700&display=swap");
+        .todos-bg-container {
+            background-color: #f9fbfe;
+            height: 100vh;
+        }
+        p { 
+          white-space: pre-wrap;
+          word-wrap: break-word;
+        }
+        ul {
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          height: 100%;
+          margin: 0;
+        }
+        canvas {
+            padding: 0;
+            margin: auto;
+        }
+        .heading {
+            /* text-align: center; */
+            font-family: "Roboto";
+            font-size: 60px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: brown
+        }
+        .heading1 {
+            text-align: center;
+            font-family: "Roboto";
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: black;
+            font-size: 25px;
+        }
+        .backButton{
+            background-color: rgb(227, 146, 39);
+            border-width: 0px;
+        }
+        .backButton:hover {
+            background-color: rgb(39, 128, 176);
+        }
+        body {
+            background: #eeffe9;
+            font-family: Arial, Helvetica, sans-serif;
+            animation: gradient 15s ease infinite;
+            height: auto;
+            color: rgb(10, 9, 9);
+            padding-bottom: 0px;
+        }
+        .listBox{
+            width: 230px;
+            height: auto;
+            padding: 8px;
+            border: 5px solid rgba(220, 195, 195,0.7);
+            background-color: rgba(64, 45, 82,0.7);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            color: white;
+            border-radius: 10px;
+        }
+        .listBox3{
+            width: auto;
+            height: auto;
+            padding: 8px;
+            border: 5px solid rgba(220, 195, 195,0.7);
+            background-color: rgba(64, 45, 82,0.7);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            color: white;
+            border-radius: 10px;
+        }
+        .listBox2{
+            width: 230px;
+            height: auto;
+            padding: 15px;
+            border: 5px solid rgba(220, 195, 195,0.7);
+            background-color: rgba(64, 45, 82,0.7);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .homeDropDown{
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border-width: 0px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+            font-family: Roboto;
+            font-size: 22px;
+        }
+        .firstPage{
+            /* background-image: url("https://i.pinimg.com/originals/9f/f7/d1/9ff7d1a690e7bf508eda106f9bc13dab.jpg"); */
+            background-color: #008374;
+            width: auto;
+            height: 100vh;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            
+        }
+        .popup {
+            position: fixed;
+            z-index: 0;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: none;
+            padding-top: 50px;
+            padding-bottom: 20px;
+            
+        }
+        .popup-content {
+            background-color: white;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #888888;
+            width: 30%;
+            font-weight: bolder;
+            border-radius: 10px;
+        }
+        .popup-content button {
+            display: block;
+            margin: 0 auto;
+            color: red;
+            font-family: Fantasy;
+            
+        }
+        .dropbtn {
+        background-color: #520fa4;
+        color: white;
+        padding: 12px;
+        font-size: 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 10px;
+        }
+
+        .dropbtn:hover, .dropbtn:focus {
+        background-color: #6a3e8e;
+        }
+
+        #myInput {
+        box-sizing: border-box;
+        /* background-image: url('searchicon.png'); */
+        background-position: 14px 12px;
+        background-repeat: no-repeat;
+        font-size: 16px;
+        padding: 14px 20px 12px 45px;
+        border: none;
+        border-bottom: 1px solid #ddd;
+        }
+
+        #myInput:focus {outline: 3px solid #ddd;}
+
+        .dropdown {
+        position: relative;
+        display: inline-block;
+        }
+
+        .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f6f6f6;
+        min-width: 230px;
+        overflow: auto;
+        border: 1px solid #ddd;
+        z-index: 1;
+        word-wrap: break-word;
+        box-shadow: 0px 0px 10px #999999;
+        border-radius: 10px;
+        }
+
+        .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        }
+
+        .dropdown a:hover {background-color: #ddd;}
+
+        .show {display: block;}
+        .li-class { cursor: pointer; }
+        
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style = "position: sticky; top: 0; background-size: cover; background: black; z-index: 1000;">
+      <a class="navbar-brand ml-3" href="#" onclick="goBackTemp()">  
+          <img src="logo.jpg" width="35" height="35" class="d-inline-block align-top" alt="">
+      </a>
+      <div>
+        <button class = "btn navbar-text mr-3" style = "font-size: 18px; color: white" onclick="zoomIn()">Zoom In +</button>
+        <button class = "btn navbar-text mr-3" style = "font-size: 18px; color: white" onclick="zoomOut()">Zoom Out -</button>
+      </div>
+      <div class="dropdown ml-3 d-none" id = "myDropdownOut">
+        <button onclick="myFunction(event)" class = "btn navbar-text"  style = "font-size: 18px; color: white">Dropdown to Select a Symptom for Clustering ↓</button>
+        <div id="myDropdown" class="dropdown-content">
+            <input style = "font-size: 20px; width: 400px;" type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+            <div id = "myDropdownIn" style="overflow-y: auto; height: 300px; border-radius: 10px; border-style: solid; border-width: 0px;"></div>
+        </div>
+      </div>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+        </ul>   
+        <button class = "btn d-none navbar-text mr-3" id = "navBackButton" style = "font-size: 18px; color: white">
+              ←Back
+        </button>
+      </div>
+    </nav>
+    
+    <div class ="firstPage" id="healthConditionSelection">
+        <div class="container" style="padding-top: 80px">
+            <div class="row">
+                <div class="col-12" style="text-align: left;">
+                    <br> <br>
+                    <div class = "d-flex flex-row">
+                        
+                        <div class = "pr-5">
+                            <br> <br>
+                            <h1 class="heading" style="color: #fff; font-size: 60px">Prognostic Trajectory</h1>
+                            <br> <br>
+                            <div>
+                                <select class="homeDropDown" id="healthCondition" style="border-radius: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)" onchange="showPatientDetails()">
+                                    <option selected disabled>Select Health Condition</option>
+                                    <option value="Sepsis" style="font-weight: bold">Sepsis</option>
+                                    <option value="Pneumonia" style="font-weight: bold">Pneumonia</option>
+                                    <option disabled value="CardiovascularDisease" style="font-weight: bold">
+                                        Cardiovascular Disease
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class = "pl-5">
+                            <img src="frontpage.png" width="400" height="300" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        //console.log(window.innerWidth);
+        //  console.log(window.innerHeight);
+        if (localStorage.getItem("curr_zoom") == null){
+            localStorage.setItem("curr_zoom", "100");
+        }
+        let curr_zoom = parseInt(localStorage.getItem("curr_zoom"));
+        document.body.style.zoom = String(curr_zoom)+"%";
+        function zoomIn(){
+            let curr_zoom = parseInt(localStorage.getItem("curr_zoom"));
+            console.log(curr_zoom);
+            curr_zoom+=10;
+            localStorage.setItem("curr_zoom", String(curr_zoom));
+            console.log(String(curr_zoom)+"%");
+            document.body.style.zoom = String(curr_zoom)+"%";
+        }
+        function zoomOut(){
+            let curr_zoom = parseInt(localStorage.getItem("curr_zoom"));
+            console.log(curr_zoom);
+            curr_zoom-=10;
+            localStorage.setItem("curr_zoom", String(curr_zoom));
+            console.log(String(curr_zoom)+"%");
+            document.body.style.zoom = String(curr_zoom)+"%";
+        }
+        
+        //dropdown for health clusters
+        function myFunction(event) {
+            event.preventDefault();
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+        function filterFunction() {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            div = document.getElementById("myDropdown");
+            a = div.getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+                txtValue = a[i].textContent || a[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+                } else {
+                a[i].style.display = "none";
+                }
+            }
+        }
+        function createHealthConditions(file_path){
+            return fetch('health_states_of_sepsis_patients.json') 
+                .then((response) => {
+                    return response.json().then((data) => {
+                        var jsonData = data; 
+                        let conditions_list = [];
+                        for (var j = 1; j < 12; j++){
+                            for (var i = 0; i < Object.keys(jsonData).length; i++) {
+                                var row = jsonData[i];
+                                let arr = row[`Stage${j}_health_conditions`].split("#");
+                                for(var k = 0; k<arr.length; k++){
+                                    if (conditions_list.includes(arr[k].toLowerCase())){
+                                        continue;
+                                    }
+                                    conditions_list.push(arr[k].toLowerCase());
+                                }
+                            }
+                        }
+                        //console.log(conditions_list);
+                        let HADMEl = document.getElementById('myDropdownIn');
+                        HADMEl.textContent = ""; 
+                        for (var j = 0; j < conditions_list.length; j++) {
+
+                            let optionEl = document.createElement("a");
+                            let hc = conditions_list[j].toLowerCase()
+                            hc = hc.charAt(0).toUpperCase() + hc.slice(1);
+                            let hc_arr = hc.split("_");
+                            if(hc_arr.length>1){
+                                let hc1 = "Negligible "+hc_arr[1];
+                                optionEl.value=hc;
+                                optionEl.innerHTML= hc1;
+                            }
+                            else{
+                                optionEl.value=hc;
+                                optionEl.innerHTML= hc;
+                            }
+                            
+                            optionEl.style.fontSize = "20px";
+                            optionEl.onclick = function(){showClusterPage(this, file_path)};
+                            HADMEl.appendChild(optionEl);
+                        }
+
+                    }).catch(error => console.error('Error:', error))});
+        }
+        // document.getElementById("searchCluster").addEventListener("click", function(event){
+        //       event.preventDefault();
+        //       showClusterPage();
+        //     });
+        
+        //extract health conditions pop-ups
+        closePopup.addEventListener("click", function () {
+                myPopup.classList.remove("show");
+            });
+        closePopup1.addEventListener("click", function () {
+                myPopup1.classList.remove("show");
+            });
+        window.addEventListener("click", function (event) {
+                if (event.target == myPopup) {
+                    myPopup.classList.remove("show");
+                }
+                if (event.target == myPopup1) {
+                    myPopup1.classList.remove("show");
+                }
+                
+            });
+
+        //back buttons
+        function goBackTemp(){
+            document.location.reload();
+        }
+        function goBack() {
+            document.location.reload();
+            let navBackButtonEl = document.getElementById("navBackButton");
+            navBackButtonEl.classList.add("d-none");
+            document.getElementById("healthConditionSelection").classList.remove("d-none");
+            let dropdownEl = document.getElementById("healthCondition")
+            dropdownEl.value = "Select Health Condition";
+            document.getElementById("patientDetails").classList.add("d-none");
+            myPopup.classList.remove("show");
+            myPopup1.classList.remove("show");
+            document.getElementById("myDropdownOut").classList.add("d-none");
+        }
+        function goBack2() {
+            document.getElementById("patientDetails").classList.remove("d-none");
+            document.getElementById("pathDetails").classList.add("d-none");
+            let navBackButtonEl = document.getElementById("navBackButton");
+            navBackButtonEl.classList.remove("d-none");
+            navBackButtonEl.onclick = function(){goBack()};
+            myPopup.classList.remove("show");
+            myPopup1.classList.remove("show");
+            myPopup.classList.remove("show");
+            myPopup1.classList.remove("show");
+            document.getElementById("myDropdown").classList.remove("show");
+        }
+        function goBack2T() {
+            document.getElementById("patientDetails").classList.remove("d-none");
+            document.getElementById("pathDetails1").classList.add("d-none");
+            let navBackButtonEl = document.getElementById("navBackButton");
+            navBackButtonEl.classList.remove("d-none");
+            navBackButtonEl.onclick = function(){goBack()};
+            myPopup.classList.remove("show");
+            myPopup1.classList.remove("show");
+            //document.getElementById("dropDownNew").value = "Select a day";
+            myPopup.classList.remove("show");
+            myPopup1.classList.remove("show");
+            document.getElementById("myDropdown").classList.remove("show");
+        }
+        function goBack3() {
+            document.getElementById("patientDetails").classList.remove("d-none");
+            document.getElementById("nursingNotes").classList.add("d-none");
+            let navBackButtonEl = document.getElementById("navBackButton");
+            navBackButtonEl.classList.remove("d-none");
+            navBackButtonEl.onclick = function(){goBack()};
+            myPopup.classList.remove("show");
+            myPopup1.classList.remove("show");
+            myPopup.classList.remove("show");
+            myPopup1.classList.remove("show");
+            document.getElementById("myDropdown").classList.remove("show");
+            document.getElementById("dropDownNew").value = "Select a day";
+        }
+        function goBack5() {
+            document.getElementById("patientDetails").classList.remove("d-none");
+            document.getElementById("PatientsClusterPage").classList.add("d-none");
+            let navBackButtonEl = document.getElementById("navBackButton");
+            navBackButtonEl.classList.remove("d-none");
+            navBackButtonEl.onclick = function(){goBack()};
+            myPopup.classList.remove("show");
+            myPopup1.classList.remove("show");
+            myPopup.classList.remove("show");
+            myPopup1.classList.remove("show");
+            document.getElementById("myDropdown").classList.remove("show");
+        }
+
+        //generating HADM ID for age, gender and clinical notes in patients detials page
+        function createHADMID(){
+            let healthCondition = document.getElementById("healthCondition").value;
+            if (healthCondition === "Sepsis"){
+                return fetch('new_patients_details_sepsis.json') 
+                    .then((response) => {
+                        return response.json().then((data) => {
+                            var jsonData = data; 
+                            let f = 1;
+                            let HADMEl = document.getElementById('hadmID');
+                            HADMEl.innerHTML = ""; 
+                            let optionEl1 = document.createElement("option");
+                            optionEl1.value="Select one";
+                            optionEl1.innerHTML= "Select one";
+                            optionEl1.selected=true;
+                            optionEl1.disabled=true;
+                            HADMEl.appendChild(optionEl1);
+                            for (var j = 0; j < Object.keys(jsonData).length; j++) {
+                                var row = jsonData[j];
+                                let optionEl = document.createElement("option");
+                                optionEl.value=row["HADM_ID"];
+                                optionEl.innerHTML= row["HADM_ID"];
+                                HADMEl.appendChild(optionEl);
+                            }
+                            if(f){
+                                return "";
+                            }
+                        }).catch(error => console.error('Error:', error))});
+            }
+            else{
+                return fetch('new_patients_details_pneumonia.json') 
+                    .then((response) => {
+                        return response.json().then((data) => {
+                            var jsonData = data; 
+                            let f = 1;
+                            let HADMEl = document.getElementById('hadmID');
+                            HADMEl.innerHTML = "";
+                            let optionEl1 = document.createElement("option");
+                            optionEl1.value="Select one";
+                            optionEl1.innerHTML= "Select one";
+                            optionEl1.selected=true;
+                            optionEl1.disabled=true;
+                            HADMEl.appendChild(optionEl1);
+                            for (var j = 0; j < Object.keys(jsonData).length; j++) {
+                                var row = jsonData[j];
+                                let optionEl = document.createElement("option");
+                                optionEl.value=row["HADM_ID"];
+                                optionEl.innerHTML= row["HADM_ID"];
+                                // if (j>1){
+                                //     optionEl.disabled=true;
+                                // }
+                                HADMEl.appendChild(optionEl);
+                                
+                            }
+                            if(f){
+                                return "";
+                            }
+                        }).catch(error => console.error('Error:', error))});
+            }
+            
+        }
+        
+        function showAgeGender(){
+            document.getElementById('clinicalNotes').innerHTML = "";
+            document.getElementById("clinicalnotesId").classList.remove('col-5');
+            document.getElementById("clinicalnotesId").classList.add('col-8');
+            extrcatedHealthConds.classList.add('d-none');
+            let healthCondition = document.getElementById("healthCondition").value;
+            if (healthCondition === "Sepsis"){
+                return fetch('new_patients_details_sepsis.json') 
+                    .then((response) => {
+                        return response.json().then((data) => {
+                            var jsonData = data; 
+                            let f = 1;
+                            let HADM_ID = parseInt(document.getElementById('hadmID').value);
+                            let ageEl = document.getElementById('age');
+                            let genderEl = document.getElementById('gender');
+                            for (var j = 0; j < Object.keys(jsonData).length; j++) {
+                                var row = jsonData[j];
+                                if (row["HADM_ID"] == HADM_ID) {
+                                    f = 0;
+                                    ageEl.value = row["Age"];
+                                    genderEl.value = row["Gender"];
+                                    createButtons();
+                                    //console.log(1);
+                                    document.getElementById('admissionDays').innerHTML = `<br><h4>Length of stay: </h4><h5>${row['LOS']} days</h5>`;
+                                    document.getElementById("predadmissionDays").innerHTML = `<br><h4>Predicted LOS: </h4><h5>${row['Pred_LOS']}</h5>`;
+                                    if (row['Pred_major_procedures']!=""){
+                                        document.getElementById("majorProcedures").innerHTML = `<br><h4>Predicted Major Procedures: </h4><h5>${row['Pred_major_procedures'].split("#").join("; ")}</h5>`
+                                    }
+                                    else{
+                                        document.getElementById("majorProcedures").innerHTML = "";
+                                    }
+                                    return "";
+                                }
+                            }
+                            if(f){
+                                return "";
+                            }
+                        }).catch(error => console.error('Error:', error))});
+            }
+            else{
+                return fetch('new_patients_details_pneumonia.json') 
+                    .then((response) => {
+                        return response.json().then((data) => {
+                            var jsonData = data; 
+                            let f = 1;
+                            let HADM_ID = parseInt(document.getElementById('hadmID').value);
+                            let ageEl = document.getElementById('age');
+                            let genderEl = document.getElementById('gender');
+                            let notesEl = document.getElementById('clinicalNotes');
+                            for (var j = 0; j < Object.keys(jsonData).length; j++) {
+                                var row = jsonData[j];
+                                if (row["HADM_ID"] == HADM_ID) {
+                                    f = 0;
+                                    ageEl.value = row["Age"];
+                                    genderEl.value = row["Gender"];
+                                    //notesEl.value = row['note'];
+                                    createButtons();
+                                    document.getElementById('admissionDays').innerHTML = `<br><h4>Length of stay: </h4><h5>${row['LOS']} days</h5>`;
+                                    document.getElementById("predadmissionDays").innerHTML = `<br><h4>Predicted LOS: </h4><h5>${row['Pred_LOS']}</h5>`;
+                                    if (row['Pred_major_procedures']!=""){
+                                        document.getElementById("majorProcedures").innerHTML = `<br><h4>Predicted Major Procedures: </h4><h5>${row['Pred_major_procedures'].split("#").join("; ")}</h5>`
+                                    }
+                                    else{
+                                        document.getElementById("majorProcedures").innerHTML = "";
+                                    }
+                                    
+                                    if (HADM_ID != 169158 && HADM_ID != 124271){
+                                        document.getElementById("PrognosticPathwayBtn").disabled = true;
+                                    }
+                                    else{
+                                        document.getElementById("PrognosticPathwayBtn").disabled = false;
+                                    }
+                                    
+                                    return "";
+                                }
+                            }
+                            if(f){
+                                return "";
+                            }
+                        }).catch(error => console.error('Error:', error))});
+            }
+            
+        }
+        function showPatientDetails() {
+            let navBackButtonEl = document.getElementById("navBackButton");
+            navBackButtonEl.classList.remove("d-none");
+            navBackButtonEl.onclick = function(){goBack()};
+            let healthCondition = document.getElementById("healthCondition").value;
+            document.getElementById("myDropdown").classList.remove("show");
+            if (healthCondition === "Select Health Condition"){
+                alert("Please select an option.");
+                return;
+            }
+            document.getElementById("healthConditionSelection").classList.add("d-none");
+            document.getElementById("patientDetails").classList.remove("d-none");
+            if (healthCondition != "Sepsis"){
+                //createHealthConditions(file_path);
+                //console.log(1);
+                document.getElementById("myDropdownOut").classList.add("d-none");
+                document.getElementById("PrognosticPathwayBtn").addEventListener('click', function (event) {
+                    event.preventDefault();
+                    pathwayButton();
+                });
+            }
+            else{
+                //console.log(1);
+                //createHealthConditions(file_path);
+                document.getElementById("myDropdownOut").classList.add("d-none");
+                document.getElementById("ExtractHealth1").textContent = "Extract Health Conditions";
+                document.getElementById("PrognosticPathwayBtn").textContent = "Prognostic Pathway";
+                const hadmid = parseInt(document.getElementById('hadmID').value);
+                console.log(hadmid);
+                document.getElementById("PrognosticPathwayBtn").addEventListener('click', function (event) {
+                    event.preventDefault();
+                    pathwayButton1(parseInt(document.getElementById('hadmID').value));
+                });
+            }
+            document.getElementById("age").value = "";
+            document.getElementById("gender").value = "";
+            //document.getElementById("symptom").value = "";
+            createHADMID();
+            document.getElementById("hadmID").value = "Select one";
+            document.getElementById("clinicalNotes").value = "";
+            document.getElementById('buttonContainer').innerHTML = '';
+            let subHeadinEl = document.getElementById("subHeading");
+            subHeadinEl.textContent = "Health Condition: "+healthCondition;
+        }
+        function createButtons() {
+            // Clear previous buttons
+            document.getElementById('buttonContainer').innerHTML = '';
+            let healthCondition = document.getElementById("healthCondition").value;
+            // Get the entered number
+            const hadmid = parseInt(document.getElementById('hadmID').value);
+            if (healthCondition!="Sepsis"){
+                //file_path - nursing notes
+                file_path = "new_nursing_notes_pneumonia.json";
+            }
+            else{
+                //file_path
+                file_path = "new_nursing_notes_sepsis.json";
+            }
+            fetchDataByHADMID(hadmid, file_path).then((data) => {
+                if(data===""){
+                    document.getElementById('buttonContainer').style.display = 'none';
+                }
+                if (healthCondition=="Sepsis"){
+                    //file_path1, file_path2, file_path3
+                    //file_path1 - daywise extracted health conditions
+                    //file_path2 - radiology notes
+                    //file_path3 - ECG notes
+                    file_path1 = "new_extracted_conditions_sepsis1.json";
+                    file_path2 = "new_radiology_notes_sepsis.json";
+                    file_path3 = "new_ECG_notes_sepsis.json";
+                    file_path4 = "health_states_of_sepsis_patients.json"
+                }
+                else{
+                    //file_path1, file_path2, file_path3
+                    file_path1 = "new_extracted_conditions_pneumonia.json";
+                    file_path2 = "new_radiology_notes_pneumonia.json";
+                    file_path3 = "new_ECG_notes_pneumonia.json";
+                    file_path4 = "sample.json"
+                }
+                const arr = [];
+                for(var i = 1; i<1000; i++){
+                    if (data[`day_${i}`]==="" || data[`day_${i}`] === undefined){
+                        break;
+                    }
+                    if(data[`day_${i}`] === "$$"){
+                        arr.push("$$");
+                    }
+                    else{
+                        arr.push(data[`day_${i}`]);
+                    }
+                }
+                let number = arr.length;
+                if (!isNaN(number) && number > 0) {
+                    // Display the button container
+                    document.getElementById('buttonContainer').style.display = 'block';
+                    document.getElementById('buttonContainer').innerHTML = '';
+                    let dropdownEl = document.createElement('select');
+                    dropdownEl.onchange = function(){displayData(arr, file_path1, file_path2, file_path3, file_path4)};
+                    dropdownEl.id = "dropDownNew";
+                    dropdownEl.style.boxShadow = "0px 0px 10px #999999";
+                    dropdownEl.style.padding = "10px";
+                    dropdownEl.style.fontSize = "18px";
+                    dropdownEl.classList.add("ml-3");
+                    dropdownEl.style.borderWidth = "0px";
+                    dropdownEl.style.borderRadius  = "10px";
+                    let optionEl1 = document.createElement("option");
+                    optionEl1.value="Select a day";
+                    optionEl1.innerHTML= "Select a day";
+                    optionEl1.selected=true;
+                    optionEl1.disabled=true;
+                    
+                    dropdownEl.appendChild(optionEl1);
+                    // Create buttons based on the entered number
+                    for (let i = 1; i <= number; i++) {
+                        const button = document.createElement('option');
+                        button.value = `Day ${i}`;
+                        button.innerHTML = `Day ${i}`;
+                        button.style.fontSize = "20px";
+                        dropdownEl.appendChild(button);
+                        
+                    }
+                        
+                        document.getElementById('buttonContainer').appendChild(dropdownEl);
+                    } else {
+                    // Hide the button container if the entered value is not valid
+                    document.getElementById('buttonContainer').style.display = 'none';
+                    }
+                
+            })
+        }
+        function fetchDataByHADMID(HADM_ID, file_path) {
+            //console.log(file_path);
+            return fetch(file_path) 
+                    .then((response) => {
+                        return response.json().then((data) => {
+                            var jsonData = data; 
+                            let f = 1;
+                            for (var i = 0; i < Object.keys(jsonData).length; i++) {
+                                var row = jsonData[i];
+                                //console.log(row);
+                                if (row["HADM_ID"] == HADM_ID) {
+                                    f = 0;
+                                    return row;
+                                }
+                            }
+                            if(f){
+                                return "";
+                            }
+                        }).catch(error => console.error('Error:', error))});
+            
+        }
+        function fetchDataByHADMID1(HADM_ID, idx, file_path) {
+            return fetch(file_path) 
+                    .then((response) => {
+                        return response.json().then((data) => {
+                            var jsonData = data; 
+                            let f = 1;
+                            for (var i = 0; i < Object.keys(jsonData).length; i++) {
+                                var row = jsonData[i];
+                                if (row["HADM_ID"] == HADM_ID) {
+                                    f = 0;
+                                    return row[`day_${idx}`];
+                                }
+                            }
+                            if(f){
+                                return "";
+                            }
+                        }).catch(error => console.error('Error:', error))});
+            
+        }
+        function fetchDataByHADMID2(HADM_ID, idx, file_path) {
+            return fetch(file_path) 
+                    .then((response) => {
+                        return response.json().then((data) => {
+                            var jsonData = data; 
+                            let f = 1;
+                            for (var i = 0; i < Object.keys(jsonData).length; i++) {
+                                var row = jsonData[i];
+                                if (row["HADM_ID"] == HADM_ID) {
+                                    f = 0;
+                                    return row[`day_${idx}`];
+                                }
+                            }
+                            if(f){
+                                return "";
+                            }
+                        }).catch(error => console.error('Error:', error))});
+            
+        }
+
+        //day-wise medical notes page for sepsis patients
+        function displayData(arr, file_path1, file_path2, file_path3, file_path4){
+            let clinicalNotesEl = document.getElementById("clinicalNotes");
+            let navBackButtonEl = document.getElementById("navBackButton");
+            navBackButtonEl.classList.remove("d-none");
+            navBackButtonEl.onclick = function(){goBack()};
+            let i = document.getElementById("dropDownNew").value;
+            const hadmid = parseInt(document.getElementById('hadmID').value);
+            if(i=='Prognostic Pathway'){
+                pathwayButton1(hadmid);
+                return;
+            }
+            i = parseInt(i.split(" ")[1]);
+            let v = arr[i-1];
+            let buttonDiv = document.getElementById("buttonContent")
+            buttonDiv.textContent = "";
+            let buttonEl = document.getElementById("ExtractHealth1");
+            console.log("")
+            // buttonEl.onclick = function (event) {
+            //     event.preventDefault();
+            //     //myPopup1.classList.add("show");
+            //     extrcatedHealthConds.classList.remove('d-none');
+            //     extractHealth(i, v, hadmid, file_path1, file_path4);
+            //   };
+            // document.getElementById("inputCard").classList.remove('col-3');
+            // document.getElementById("inputCard").classList.add('col-2');
+            document.getElementById("clinicalnotesId").classList.remove('col-8');
+            document.getElementById("clinicalnotesId").classList.add('col-5');
+            
+            extrcatedHealthConds.classList.remove('d-none');
+            extractHealth(i, v, hadmid, file_path1, file_path4);
+            
+            let contentEl = [];
+            let notesText = document.createElement("p");
+            if(v != "$$"){
+                contentEl.push(`<h4 style="font-weight: bold">Nursing Notes: </h4>`+v.replaceAll("\\", ""));
+            }
+            let contentPromises = [];
+            contentPromises.push(
+            fetchDataByHADMID1(hadmid, i, file_path2).then((data) => {
+                if(data != "$$"){
+                    contentEl.push(`<h4 style="font-weight: bold">Radiology Reports: </h4>`+data.replaceAll("\\", ""));
+                }
+            }));
+            contentPromises.push(
+            fetchDataByHADMID2(hadmid, i, file_path3).then((data) => {
+                if(data != "$$"){
+                    contentEl.push(`<h4 style="font-weight: bold">ECG Reports: </h4>`+data.replaceAll("\\", ""));
+                }
+                
+            }));
+            Promise.all(contentPromises).then(() => {
+                // console.log(contentEl);
+                // console.log(contentEl.join("\n\n"));
+                clinicalNotesEl.innerHTML = contentEl.join("\n");
+            })
+        }
+
+        //extracted health conditions for sepsis patients
+        function fetchHealthByHADMID(HADM_ID, idx, file_path) {
+            console.log(file_path);
+            return fetch(file_path) 
+                    .then((response) => {
+                        return response.json().then((data) => {
+                            var jsonData = data; 
+                            let f = 1;
+                            for (var j = 0; j < Object.keys(jsonData).length; j++) {
+                                var row = jsonData[j];
+                                if (row["HADM_ID"] == HADM_ID) {
+                                    f = 0;
+                                    let row_els = row[`day_${idx}`].split("#");
+                                    //return fetchCondition(row, idx);
+                                    if(row[`day_${idx}`]==="$$"){
+                                        return [['No extracted health conditions.']]
+                                    }
+                                    return [row_els];
+                                }
+                            }
+                            if(f){
+                                return "";
+                            }
+                        }).catch(error => console.error('Error:', error))});
+            
+        }
+        function extractHealth(i, v, hadmid, file_path1, file_path2){
+            // document.getElementById("nursingNotes").classList.add("d-none");
+            // document.getElementById("ExtractedConditions").classList.remove("d-none");
+            console.log(i, hadmid);
+            document.getElementById("myDropdown").classList.remove("show");
+            let ConditionsHeadingEl = document.getElementById("ConditionsHeading")
+            ConditionsHeadingEl.textContent = "";
+            let mainContainerEl = document.getElementById("ConditionsContent");
+            mainContainerEl.textContent = "";
+            let listBoxEl = document.createElement("div");
+            listBoxEl.textContent = "";
+            //listBoxEl.classList.add("listBox1");
+            let todoItemsContainer = document.createElement("ul");
+            let headingEl = document.createElement("h2");
+            headingEl.classList.add("heading");
+            headingEl.style.fontSize = "30px";
+            headingEl.textContent = `Extracted Health Conditions on Day ${i}`;
+            ConditionsHeadingEl.appendChild(headingEl);
+            fetchHealthByHADMID(hadmid, i, file_path1).then((data) => {
+                if(data[0] === undefined){
+                    mainContainerEl.textContent = "";
+                    return;
+                }
+                else if(data[0][0]=='No extracted health conditions.'){
+                        let todoItemsContainer1 = document.createElement("div");
+                        let todoElement = document.createElement("p");
+                        todoElement.classList.add("mb-3");
+                        todoElement.textContent = data[0][0];
+                        todoElement.style.fontSize = "20px";
+                        todoItemsContainer1.appendChild(todoElement); 
+                        listBoxEl.appendChild(todoItemsContainer1);
+                        mainContainerEl.appendChild(listBoxEl);
+                }
+                else{
+                    for(var j=0; j<data[0].length; j++){
+                        let todoElement = document.createElement("li");
+                        todoElement.classList.add("mb-3");
+                        todoElement.setAttribute("data-value", data[0][j]);
+                        todoElement.innerHTML = capitalizeFirstLetter(data[0][j]);
+                        todoElement.style.fontSize = "20px";
+                        console.log(todoElement.getAttribute("data-value"));
+                        todoElement.onclick = function(){showClusterPage(this, file_path2)};
+                        todoElement.classList.add("li-class");
+                        todoItemsContainer.appendChild(todoElement); 
+                    }
+                    listBoxEl.appendChild(todoItemsContainer);
+                    mainContainerEl.appendChild(listBoxEl);
+                }
+            })
+        }
+
+        //prognostic pathway for sepsis patients
+        function fetchRowByHADMID1(HADM_ID) {
+            return fetch('new_disease_trajectory_sepsis.json') 
+                    .then((response) => {
+                        return response.json().then((data) => {
+                            var jsonData = data; 
+                            let f = 1;
+                            for (var i = 0; i < Object.keys(jsonData).length; i++) {
+                                var row = jsonData[i];
+                                if (row["HADM_ID"] == HADM_ID) {
+                                    f = 0;
+                                    let arr =[];
+                                    for(var j = 1; j<1000; j++){
+                                        if(row[`Stage${j}`] === "" || row[`Stage${j}`]===undefined){
+                                            break;
+                                        }
+                                        let part1 = row[`Stage${j}`];
+                                        let part2 = row[`Stage${j}_health_conditions`].split("#");
+                                        let part3 = row[`Sepsis_stage_of_Stage${j}`].toLowerCase();
+                                        part2 = part2.map(v => v.toLowerCase());
+                                        if (part2.indexOf(part3)!=-1){
+                                            part2 = part2.filter(v => v != part3);
+                                        }
+                                        part2.unshift(part3);
+                                        if(arr.length == 0){
+                                            arr.push([part1, part2, `Stage${j}`, ""]);
+                                        }
+                                        else{
+                                            let special_arr = [];
+                                            let prev_arr = arr[arr.length-1][1];
+                                            for(var k = 0; k<part2.length; k++){
+                                                if (prev_arr.indexOf(part2[k]) === -1){
+                                                    special_arr.push(part2[k]);
+                                                }
+                                            }
+                                            arr.push(["", part2, `Stage${j}`, special_arr]);
+                                        }
+                                        console.log(arr);
+                                    }
+                                    if(row[`Discharge_stage`] != "" && row[`Discharge_stage`]!=undefined){
+                                            let part = row['Discharge_condition'].split("#");
+                                            arr.push(["", part, "Discharge Stage", ""]);
+                                        }
+                                    
+                                    //console.log(arr);
+                                    return arr;
+                                }
+                            }
+                            if(f){
+                                return "";
+                            }
+                        }).catch(error => console.error('Error:', error))});
+            
+        }
+
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        function pathwayButton1(hadmid){
+            console.log(hadmid);
+            let navBackButtonEl = document.getElementById("navBackButton");
+            navBackButtonEl.classList.remove("d-none");
+            navBackButtonEl.onclick = function(){goBack2T()};
+            let age = document.getElementById("age").value;
+            let gender = document.getElementById("gender").value;
+            let clinicalNotes = document.getElementById("clinicalNotes").value;
+            let hadm_id = document.getElementById("hadmID").value;
+            if (hadm_id === "Select one"){
+                alert("Please select the HADM ID.");
+                return;
+            }
+            if (age === ""){
+                alert("Please fill the age.");
+                return;
+            }
+            if (gender === ""){
+                alert("Please fill the gender.");
+                return;
+            }
+            fetchRowByHADMID1(hadmid).then((arr1) => {
+                document.getElementById("patientDetails").classList.add("d-none");
+                document.getElementById("pathDetails1").classList.remove("d-none");
+                let pathDetails = document.getElementById("pathDetails1");
+                pathDetails.textContent = "";
+                let rowdiv = document.createElement("div");
+                rowdiv.classList.add("row");
+                let colDiv1 = document.createElement("div");
+                colDiv1.classList.add("col-12");
+                // let buttonEl = document.createElement("button");
+                // buttonEl.classList.add("btn", "btn-secondary", "backButton");
+                // buttonEl.style.borderWidth = "0px";
+                // buttonEl.onclick = function(){goBack2T()};
+                // let spanEl = document.createElement("span");
+                // spanEl.textContent = "←Back";
+                // spanEl.style.fontSize = "20px";
+                // buttonEl.appendChild(spanEl);
+                // colDiv1.appendChild(buttonEl);
+                let headinEl = document.createElement("h1");
+                headinEl.classList.add("heading", "mb-5", "text-center");
+                headinEl.textContent = "Prognostic Pathway";
+                colDiv1.appendChild(headinEl);
+                rowdiv.appendChild(colDiv1);
+                pathDetails.appendChild(rowdiv);
+                
+                let splicV = 4;
+                let path_arr1 = arr1.slice(0,splicV);
+                let path_arr2 = arr1.slice(splicV,splicV*2);
+                let path_arr3 = arr1.slice(splicV*2,arr1.length);
+                // console.log(arr1);
+                // console.log(path_arr1);
+                // console.log(path_arr2);
+                // console.log(path_arr3);
+
+                let pathDetailsBox = document.createElement("div");
+                pathDetailsBox.classList.add("row");
+                pathDetailsBox.textContent = "";
+
+                let colDiv = document.createElement("div");
+                colDiv.classList.add("col", "d-flex", "flex-row");
+                let listboxClassEl = "listBox"
+                if (path_arr1.length<splicV){
+                    colDiv.classList.add("justify-content-center");
+                    listboxClassEl = "listBox3";
+                }
+                colDiv.textContent = "";
+
+                for(var j = 0; j<path_arr1.length; j++){
+                    let arr = [path_arr1[j]];
+                    let itemDiv = document.createElement("div");
+                    itemDiv.classList.add(listboxClassEl);
+                    let todoItemsContainer = document.createElement("ul");
+                    todoItemsContainer.textContent = "";
+                    itemDiv.textContent = "";
+                    
+                    for(var i = 0; i<arr.length; i++){
+                        let todoHeading = document.createElement("h5");
+                        //let todoElement = document.createElement("p");
+                        todoHeading.classList.add("mb-3");
+                        //todoElement.classList.add("mb-3", "d-flex", "flex-row", "justify-content-center");
+                        todoHeading.textContent = arr[i][2]+"\n\n"+arr[i][0];
+                        todoHeading.style.textAlign = "left";
+                        todoItemsContainer.appendChild(todoHeading);
+                        //todoElement.classList.add("mb-3");
+                        let temp_arr = arr[i][1];
+                        for(var k = 0; k<temp_arr.length; k++){
+                            let todoElement = document.createElement("li");
+                            todoElement.classList.add("mb-3");
+                            todoElement.textContent = capitalizeFirstLetter(temp_arr[k]);
+                            if (k==0){
+                                todoElement.textContent = temp_arr[k].toUpperCase();
+                                todoElement.style.fontWeight = "bold";
+                            }
+                            if (arr[i][3] != "" && k>0){
+                                if(arr[i][3].indexOf(temp_arr[k]) != -1){
+                                    todoElement.style.color = "red";
+                                }
+                            }
+                            todoElement.style.fontSize = "19px";
+                            todoItemsContainer.appendChild(todoElement);
+                        }
+                        //todoElement.textContent = arr[i][1];
+                        todoHeading.style.fontSize = "25px";
+                        //todoElement.style.fontSize = "20px";
+                        
+                        //todoItemsContainer.appendChild(todoElement);
+                    }
+                    itemDiv.appendChild(todoItemsContainer);
+                    let tempDiv1 = document.createElement("div");
+                    tempDiv1.classList.add("d-flex", "flex-row");
+                    tempDiv1.appendChild(itemDiv);
+                    let itemDiv1 = document.createElement("div");
+                    itemDiv1.classList.add("align-self-center");
+                    let arrowRight = document.createElement("h3");
+                    arrowRight.textContent = "→";
+                    arrowRight.style.fontSize = "70px";
+                    itemDiv1.appendChild(arrowRight);
+                    if(j<path_arr1.length-1){
+                        tempDiv1.appendChild(itemDiv1);
+                    }
+                    colDiv.appendChild(tempDiv1);
+                    
+                }
+                pathDetailsBox.appendChild(colDiv);
+                pathDetails.appendChild(pathDetailsBox);
+                path_arr2 = arr1.slice(splicV,arr1.length);
+                let flag = 0;
+                let idx = splicV;
+                while(path_arr2.length>0){
+                    path_arr3 = path_arr2.slice(0, splicV);
+                    if(flag%2 === 0){
+                        let arrowRow = document.createElement("div");
+                        arrowRow.classList.add("row");
+                        arrowRow.textContent = "";
+                        let arrowCol = document.createElement("div");
+                        arrowCol.classList.add("col", "d-flex", "flex-row-reverse");
+                        
+                        let itemDiv3 = document.createElement("div");
+                        itemDiv3.classList.add("align-self-center");
+                        let arrowDown = document.createElement("h4");
+                        arrowDown.style.marginRight = "130px";
+                        arrowDown.textContent = "↓";
+                        arrowDown.style.fontSize = "70px";
+                        itemDiv3.appendChild(arrowDown);
+
+                        arrowCol.appendChild(itemDiv3);
+                        arrowRow.appendChild(arrowCol);
+                        pathDetails.appendChild(arrowRow);
+                        
+
+                        let pathDetailsBox = document.createElement("div");
+                        pathDetailsBox.classList.add("row");
+                        pathDetailsBox.textContent = "";
+
+                        let colDiv = document.createElement("div");
+                        colDiv.classList.add("col", "d-flex", "flex-row-reverse", "mr-3");
+                        let listboxClassEl = "listBox"
+                        if (path_arr1.length<splicV){
+                            colDiv.classList.add("justify-content-center");
+                            listboxClassEl = "listBox3";
+                        }
+                        colDiv.textContent = "";
+
+                        for(var j = 0; j<path_arr3.length; j++){
+                            idx= idx+1;
+                            let arr = [path_arr3[j]];
+                            let itemDiv = document.createElement("div");
+                            itemDiv.classList.add(listboxClassEl);
+                            let todoItemsContainer = document.createElement("ul");
+                            todoItemsContainer.textContent = "";
+                            itemDiv.textContent = "";
+                            
+                            for(var i = 0; i<arr.length; i++){
+                                let todoHeading = document.createElement("h5");
+                                //let todoElement = document.createElement("p");
+                                todoHeading.classList.add("mb-3");
+                                //todoElement.classList.add("mb-3", "d-flex", "flex-row", "justify-content-center");
+                                todoHeading.textContent = arr[i][2]+"\n\n"+arr[i][0];
+                                todoHeading.style.textAlign = "left";
+                                todoItemsContainer.appendChild(todoHeading);
+                                //todoElement.classList.add("mb-3");
+                                let temp_arr = arr[i][1];
+                                for(var k = 0; k<temp_arr.length; k++){
+                                    let todoElement = document.createElement("li");
+                                    todoElement.classList.add("mb-3");
+                                    todoElement.textContent = capitalizeFirstLetter(temp_arr[k]);
+                                    if (k==0){
+                                        todoElement.textContent = temp_arr[k].toUpperCase();
+                                        todoElement.style.fontWeight = "bold";
+                                    }
+                                    if (arr[i][3] != "" && k>0){
+                                        if(arr[i][3].indexOf(temp_arr[k]) != -1){
+                                            todoElement.style.color = "red";
+                                        }
+                                    }
+                                    todoElement.style.fontSize = "19px";
+                                    todoItemsContainer.appendChild(todoElement);
+                                }
+                                //todoElement.textContent = arr[i][1];
+                                todoHeading.style.fontSize = "25px";
+                                //todoElement.style.fontSize = "20px";
+                                
+                                //todoItemsContainer.appendChild(todoElement);
+                            }
+                            itemDiv.appendChild(todoItemsContainer);
+                            let tempDiv1 = document.createElement("div");
+                            tempDiv1.classList.add("d-flex", "flex-row");
+                            
+                            let itemDiv2 = document.createElement("div");
+                            itemDiv2.classList.add("align-self-center");
+                            let arrowLeft = document.createElement("h3");
+                            arrowLeft.textContent = "←";
+                            arrowLeft.style.fontSize = "70px";
+                            itemDiv2.appendChild(arrowLeft);
+                            if(j<path_arr3.length-1){
+                                tempDiv1.appendChild(itemDiv2);
+                            }
+                            tempDiv1.appendChild(itemDiv);
+                            colDiv.appendChild(tempDiv1);
+                        }
+
+                        pathDetailsBox.appendChild(colDiv);
+                        pathDetails.appendChild(pathDetailsBox);
+                    }
+                    else{
+                        let arrowRow = document.createElement("div");
+                        arrowRow.classList.add("row");
+                        arrowRow.textContent = "";
+                        let arrowCol = document.createElement("div");
+                        arrowCol.classList.add("col", "d-flex", "flex-row");
+                        
+                        let itemDiv3 = document.createElement("div");
+                        itemDiv3.classList.add("align-self-center");
+                        let arrowDown = document.createElement("h4");
+                        arrowDown.style.marginLeft = "110px";
+                        arrowDown.textContent = "↓";
+                        arrowDown.style.fontSize = "70px";
+                        itemDiv3.appendChild(arrowDown);
+                        
+
+                        arrowCol.appendChild(itemDiv3);
+                        arrowRow.appendChild(arrowCol);
+                        pathDetails.appendChild(arrowRow);
+
+                        let pathDetailsBox = document.createElement("div");
+                        pathDetailsBox.classList.add("row");
+                        pathDetailsBox.textContent = "";
+
+                        let colDiv = document.createElement("div");
+                        colDiv.classList.add("col", "d-flex", "flex-row", );
+                        let listboxClassEl = "listBox"
+                        if (path_arr1.length<splicV){
+                            colDiv.classList.add("justify-content-center");
+                            listboxClassEl = "listBox3";
+                        }
+                        colDiv.textContent = "";
+
+                        for(var j = 0; j<path_arr3.length; j++){
+                            idx=idx+1;
+                            let arr = [path_arr3[j]];
+                            let itemDiv = document.createElement("div");
+                            itemDiv.classList.add(listboxClassEl);
+                            let todoItemsContainer = document.createElement("ul");
+                            todoItemsContainer.textContent = "";
+                            itemDiv.textContent = "";
+                            
+                            for(var i = 0; i<arr.length; i++){
+                                let todoHeading = document.createElement("h5");
+                                //let todoElement = document.createElement("p");
+                                todoHeading.classList.add("mb-3");
+                                //todoElement.classList.add("mb-3", "d-flex", "flex-row", "justify-content-center");
+                                todoHeading.textContent = arr[i][2]+"\n\n"+arr[i][0];
+                                todoHeading.style.textAlign = "left";
+                                todoItemsContainer.appendChild(todoHeading);
+                                //todoElement.classList.add("mb-3");
+                                let temp_arr = arr[i][1];
+                                for(var k = 0; k<temp_arr.length; k++){
+                                    let todoElement = document.createElement("li");
+                                    todoElement.classList.add("mb-3");
+                                    todoElement.textContent = capitalizeFirstLetter(temp_arr[k]);
+                                    if (k==0){
+                                        todoElement.textContent = temp_arr[k].toUpperCase();
+                                        todoElement.style.fontWeight = "bold";
+                                    }
+                                    if (arr[i][3] != "" && k>0){
+                                        if(arr[i][3].indexOf(temp_arr[k]) != -1){
+                                            todoElement.style.color = "red";
+                                        }
+                                    }
+                                    todoElement.style.fontSize = "19px";
+                                    todoItemsContainer.appendChild(todoElement);
+                                }
+                                //todoElement.textContent = arr[i][1];
+                                todoHeading.style.fontSize = "25px";
+                                //todoElement.style.fontSize = "20px";
+                                
+                                //todoItemsContainer.appendChild(todoElement);
+                            }
+                            itemDiv.appendChild(todoItemsContainer);
+                            let tempDiv1 = document.createElement("div");
+                            tempDiv1.classList.add("d-flex", "flex-row");
+                            tempDiv1.appendChild(itemDiv);
+                            let itemDiv1 = document.createElement("div");
+                            itemDiv1.classList.add("align-self-center");
+                            let arrowRight = document.createElement("h3");
+                            arrowRight.textContent = "→";
+                            arrowRight.style.fontSize = "70px";
+                            itemDiv1.appendChild(arrowRight);
+                            if(j<path_arr3.length-1){
+                                tempDiv1.appendChild(itemDiv1);
+                            }
+                            colDiv.appendChild(tempDiv1);
+                            
+                        }
+                        pathDetailsBox.appendChild(colDiv);
+                        pathDetails.appendChild(pathDetailsBox);
+                    }
+                    path_arr2 = path_arr2.slice(splicV, arr1.length);
+                    flag=flag + 1;
+                }
+            }) 
+        }
+            
+        //predicted pathway for Pnemonia patients
+        function fetchRowByHADMID(HADM_ID) {
+            return fetch('sample.json') 
+                    .then((response) => {
+                        return response.json().then((data) => {
+                            var jsonData = data; 
+                            let f = 1;
+                            for (var i = 0; i < Object.keys(jsonData).length; i++) {
+                                var row = jsonData[i];
+                                if (row["HADM_ID"] == HADM_ID) {
+                                    f = 0;
+                                    return row;
+                                }
+                            }
+                            if(f){
+                                return "";
+                            }
+                        }).catch(error => console.error('Error:', error))});
+            
+        }
+        
+        function pathwayButton(){
+            let navBackButtonEl = document.getElementById("navBackButton");
+            navBackButtonEl.classList.remove("d-none");
+            navBackButtonEl.onclick = function(){goBack2()};
+            let healthCondition = document.getElementById("healthCondition").value;
+            let age = document.getElementById("age").value;
+            let gender = document.getElementById("gender").value;
+            let hadm_id = document.getElementById("hadmID").value;
+            let clinicalNotes = document.getElementById("clinicalNotes").value;
+            if (hadm_id === "Select one"){
+                alert("Please select the HADM ID.");
+                return;
+            }
+            if (age === ""){
+                alert("Please fill the age.");
+                return;
+            }
+            if (gender === ""){
+                alert("Please fill the gender.");
+                return;
+            }
+            
+            // if (clinicalNotes === ""){
+            //     alert("Please fill the clinical notes.");
+            //     return;
+            // }
+            hadm_id = parseInt(hadm_id);
+            document.getElementById("patientDetails").classList.add("d-none");
+            document.getElementById("pathDetails").classList.remove("d-none");
+            let pathDetails = document.getElementById("pathDetails");
+            pathDetails.textContent = "";
+            let rowdiv = document.createElement("div");
+            rowdiv.classList.add("row");
+            let colDiv1 = document.createElement("div");
+            colDiv1.classList.add("col-12");
+            let headinEl = document.createElement("h1");
+            headinEl.classList.add("heading", "mb-5");
+            headinEl.textContent = "Prognostic Pathway";
+            colDiv1.appendChild(headinEl);
+            rowdiv.appendChild(colDiv1);
+            pathDetails.appendChild(rowdiv);
+            let path_arr = [];
+            fetchRowByHADMID(hadm_id).then((data) => {
+                if(data==="" || healthCondition!="Pneumonia"){
+                    return;
+                }
+                for (let i = 1; i < 1000; i++) {
+                    let label = `Stage${i}_health_conditions`;
+                    if (data[label] === "" || data[label]===undefined){
+                        break;
+                    }
+                    const myArray = data[label].toLowerCase().split("#");
+                    if(path_arr.length == 0){
+                        path_arr.push([data[`Stage${i}`], myArray, ""])
+                    }
+                    else{
+                        let special_arr = [];
+                        let prev_arr = path_arr[path_arr.length-1][1];
+                        for(var k = 0; k<myArray.length; k++){
+                            if(prev_arr.indexOf(myArray[k])===-1){
+                                special_arr.push(myArray[k]);
+                            }
+                        }
+                        path_arr.push(["", myArray, special_arr])
+                    }
+                }
+                if (data["Discharge_stage_health_conditions"] != "" && data["Discharge_stage_health_conditions"]!=undefined){
+                    const myArray = data["Discharge_stage_health_conditions"].split("#");
+                    path_arr.push(["", myArray, ""]);
+                }
+                let splicV = 4;
+                let path_arr1 = path_arr.slice(0,splicV);
+                let path_arr2 = path_arr.slice(splicV,splicV*2);
+                let path_arr3 = path_arr.slice(splicV*2,path_arr.length);
+
+                // console.log(path_arr1);
+                // console.log(path_arr2);
+                // console.log(path_arr3);
+
+                let pathDetailsBox = document.createElement("div");
+                pathDetailsBox.classList.add("row");
+                pathDetailsBox.textContent = "";
+
+                let colDiv = document.createElement("div");
+                colDiv.classList.add("col-12","d-flex", "flex-row");
+                let listboxClassEl = "listBox"
+                if (path_arr1.length<splicV){
+                    colDiv.classList.add("justify-content-center");
+                    listboxClassEl = "listBox3";
+                }
+                colDiv.textContent = "";
+
+                for(var j = 0; j<path_arr1.length; j++){
+                    let arr = path_arr1[j];
+                    let itemDiv = document.createElement("div");
+                    itemDiv.classList.add(listboxClassEl);
+                    let todoItemsContainer = document.createElement("ul");
+                    todoItemsContainer.textContent = "";
+                    itemDiv.textContent = "";
+
+                    let todoHeading = document.createElement("h5");
+                    //let todoElement = document.createElement("p");
+                    todoHeading.classList.add("mb-3");
+                    //todoElement.classList.add("mb-3", "d-flex", "flex-row", "justify-content-center");
+                    todoHeading.textContent = `Stage${j+1}\n\n`+arr[0];
+                    todoHeading.style.textAlign = "left";
+                    todoHeading.style.fontSize = "25px";
+                    todoItemsContainer.appendChild(todoHeading);
+                    
+                    for(var i = 0; i<arr[1].length; i++){
+                        let todoElement = document.createElement("li");
+                        todoElement.classList.add("mb-3");
+                        todoElement.textContent = capitalizeFirstLetter(arr[1][i]);
+                        todoElement.style.fontSize = "19px";
+                        if(j>0 && arr[2]!==""){
+                            if(arr[2].indexOf(arr[1][i]) !==-1){
+                                todoElement.style.color = 'red';
+                            }
+                        }
+                        todoItemsContainer.appendChild(todoElement);
+                    }
+                    itemDiv.appendChild(todoItemsContainer);
+                    let tempDiv1 = document.createElement("div");
+                    tempDiv1.classList.add("d-flex", "flex-row");
+                    tempDiv1.appendChild(itemDiv);
+                    let itemDiv1 = document.createElement("div");
+                    itemDiv1.classList.add("align-self-center");
+                    let arrowRight = document.createElement("span");
+                    arrowRight.innerHTML = "&#8594;";
+                    arrowRight.style.fontSize = "70px";
+                    itemDiv1.appendChild(arrowRight);
+                    if(j<path_arr1.length-1){
+                        tempDiv1.appendChild(itemDiv1);
+                    }
+                    colDiv.appendChild(tempDiv1);
+                    
+                }
+                
+                pathDetailsBox.appendChild(colDiv);
+                pathDetails.appendChild(pathDetailsBox);
+                path_arr2 = path_arr.slice(splicV,path_arr.length);
+                let flag = 0;
+                let idx = splicV;
+                while(path_arr2.length>0){
+                    path_arr3 = path_arr2.slice(0, splicV);
+                    if(flag%2 === 0){
+                        let arrowRow = document.createElement("div");
+                        arrowRow.classList.add("row");
+                        arrowRow.textContent = "";
+                        let arrowCol = document.createElement("div");
+                        arrowCol.classList.add("col", "d-flex", "flex-row-reverse");
+                        
+                        let itemDiv3 = document.createElement("div");
+                        itemDiv3.classList.add("align-self-center");
+                        let arrowDown = document.createElement("h4");
+                        arrowDown.style.marginRight = "120px";
+                        arrowDown.textContent = "↓";
+                        arrowDown.style.fontSize = "70px";
+                        itemDiv3.appendChild(arrowDown);
+    
+                        arrowCol.appendChild(itemDiv3);
+                        arrowRow.appendChild(arrowCol);
+                        pathDetails.appendChild(arrowRow);
+                        
+    
+                        let pathDetailsBox = document.createElement("div");
+                        pathDetailsBox.classList.add("row");
+                        pathDetailsBox.textContent = "";
+    
+                        let colDiv = document.createElement("div");
+                        colDiv.classList.add("col", "d-flex", "flex-row-reverse", "mr-3");
+                        colDiv.textContent = "";
+    
+                        let listboxClassEl = "listBox"
+                        if (path_arr1.length<splicV){
+                            colDiv.classList.add("justify-content-center");
+                            listboxClassEl = "listBox3";
+                        }
+
+                        
+    
+                        for(var j = 0; j<path_arr3.length; j++){
+                            let arr = path_arr3[j];
+                            let itemDiv = document.createElement("div");
+                            itemDiv.classList.add(listboxClassEl);
+                            let todoItemsContainer = document.createElement("ul");
+                            todoItemsContainer.textContent = "";
+                            itemDiv.textContent = "";
+
+                            let todoHeading = document.createElement("h5");
+                            //let todoElement = document.createElement("p");
+                            todoHeading.classList.add("mb-3");
+                            //todoElement.classList.add("mb-3", "d-flex", "flex-row", "justify-content-center");
+                            todoHeading.textContent = `Stage${idx+flag+1}\n\n`+arr[0];
+                            todoHeading.style.textAlign = "left";
+                            todoHeading.style.fontSize = "25px";
+                            todoItemsContainer.appendChild(todoHeading);
+                            
+                            for(var i = 0; i<arr[1].length; i++){
+                                let todoElement = document.createElement("li");
+                                todoElement.classList.add("mb-3");
+                                todoElement.textContent = capitalizeFirstLetter(arr[1][i]);
+                                todoElement.style.fontSize = "19px";
+                                if(j>0 && arr[2]!==""){
+                                    if(arr[2].indexOf(arr[1][i]) !==-1){
+                                        todoElement.style.color = 'red';
+                                    }
+                                }
+                                todoItemsContainer.appendChild(todoElement);
+                            }
+                            itemDiv.appendChild(todoItemsContainer);
+                            let tempDiv1 = document.createElement("div");
+                            tempDiv1.classList.add("d-flex", "flex-row");
+                            
+                            let itemDiv2 = document.createElement("div");
+                            itemDiv2.classList.add("align-self-center");
+                            let arrowLeft = document.createElement("h3");
+                            arrowLeft.textContent = "←";
+                            arrowLeft.style.fontSize = "70px";
+                            itemDiv2.appendChild(arrowLeft);
+                            if(j<path_arr3.length-1){
+                                tempDiv1.appendChild(itemDiv2);
+                            }
+                            tempDiv1.appendChild(itemDiv);
+                            colDiv.appendChild(tempDiv1);
+                        }
+                        pathDetailsBox.appendChild(colDiv);
+                        pathDetails.appendChild(pathDetailsBox);
+                    }
+                    
+                    else{
+                        let arrowRow = document.createElement("div");
+                        arrowRow.classList.add("row");
+                        arrowRow.textContent = "";
+                        let arrowCol = document.createElement("div");
+                        arrowCol.classList.add("col", "d-flex", "flex-row");
+                        
+                        let itemDiv3 = document.createElement("div");
+                        itemDiv3.classList.add("align-self-center");
+                        let arrowDown1 = document.createElement("h4");
+                        arrowDown1.style.marginLeft = "100px";
+                        arrowDown.textContent = "↓";
+                        arrowDown.style.fontSize = "70px";
+                        itemDiv3.appendChild(arrowDown);
+    
+                        arrowCol.appendChild(itemDiv3);
+                        arrowRow.appendChild(arrowCol);
+                        pathDetails.appendChild(arrowRow);
+    
+                        let pathDetailsBox = document.createElement("div");
+                        pathDetailsBox.classList.add("row");
+                        pathDetailsBox.textContent = "";
+    
+                        let colDiv = document.createElement("div");
+                        colDiv.classList.add("col", "d-flex", "flex-row");
+                        colDiv.textContent = "";
+                        let listboxClassEl = "listBox"
+                        if (path_arr1.length<splicV){
+                            colDiv.classList.add("justify-content-center");
+                            listboxClassEl = "listBox3";
+                        }
+    
+                        for(var j = 0; j<path_arr3.length; j++){
+                            let arr = path_arr3[j];
+                            let itemDiv = document.createElement("div");
+                            itemDiv.classList.add(listboxClassEl);
+                            let todoItemsContainer = document.createElement("ul");
+                            todoItemsContainer.textContent = "";
+                            itemDiv.textContent = "";
+
+                            let todoHeading = document.createElement("h5");
+                            //let todoElement = document.createElement("p");
+                            todoHeading.classList.add("mb-3");
+                            //todoElement.classList.add("mb-3", "d-flex", "flex-row", "justify-content-center");
+                            todoHeading.textContent = `Stage${idx+flag+1}\n\n`+arr[0];
+                            todoHeading.style.textAlign = "left";
+                            todoHeading.style.fontSize = "25px";
+                            todoItemsContainer.appendChild(todoHeading);
+                            
+                            for(var i = 0; i<arr[1].length; i++){
+                                let todoElement = document.createElement("li");
+                                todoElement.classList.add("mb-3");
+                                todoElement.textContent = capitalizeFirstLetter(arr[1][i]);
+                                todoElement.style.fontSize = "19px";
+                                if(j>0 && arr[2]!==""){
+                                    if(arr[2].indexOf(arr[1][i]) !==-1){
+                                        todoElement.style.color = 'red';
+                                    }
+                                }
+                                todoItemsContainer.appendChild(todoElement);
+                            }
+                            itemDiv.appendChild(todoItemsContainer);
+                            let tempDiv1 = document.createElement("div");
+                            tempDiv1.classList.add("d-flex", "flex-row");
+                            tempDiv1.appendChild(itemDiv);
+                            let itemDiv1 = document.createElement("div");
+                            itemDiv1.classList.add("align-self-center");
+                            let arrowRight = document.createElement("h3");
+                            arrowRight.textContent = "→";
+                            arrowRight.style.fontSize = "70px";
+                            itemDiv1.appendChild(arrowRight);
+                            if(j<path_arr3.length-1){
+                                tempDiv1.appendChild(itemDiv1);
+                            }
+                            colDiv.appendChild(tempDiv1);
+                        }
+                        pathDetailsBox.appendChild(colDiv);
+                        pathDetails.appendChild(pathDetailsBox);
+                    }
+                    path_arr2 = path_arr2.slice(splicV, path_arr.length);
+                    flag=flag + 1;
+                }
+            })
+        }
+
+        //health clsuters page
+        function getHealthCluster(health_condition, file_path) {
+            console.log(file_path);
+            return fetch(file_path) 
+                .then((response) => {
+                    return response.json().then((data) => {
+                        var jsonData = data; 
+                        health_condition = health_condition.toLowerCase();
+                        if(health_condition==""){
+                            alert("Please enter a health condition.");
+                            return;
+                        }
+                        let cluster_d = {};
+                        let stages_list = [];
+                        for (var j = 1; j < 12; j++){
+                            cluster_d[`Stage ${j}`] = [];
+                            stages_list.push(`Stage ${j}`);
+                            let f = 1;
+                            for (var i = 0; i < Object.keys(jsonData).length; i++) {
+                                var row = jsonData[i];
+                                if (row[`Stage${j}_health_conditions`] === undefined){
+                                    continue;
+                                }
+                                let arr1 = row[`Stage${j}_health_conditions`].split("#");
+                                const arr = arr1.map(element => {
+                                    return element.toLowerCase();
+                                    });
+                                if(arr.includes(health_condition)){
+                                    f=0;
+                                    cluster_d[`Stage ${j}`].push(row['HADM_ID']);
+                                }
+                            }
+                            if(f){
+                                delete cluster_d[`Stage ${j}`];
+                            }
+                        }
+                        return [cluster_d, stages_list];
+                    }).catch(error => console.error('Error:', error))});
+        }
+        
+        function showClusterPage( thisObj , file_path){
+            let navBackButtonEl = document.getElementById("navBackButton");
+            navBackButtonEl.classList.remove("d-none");
+            navBackButtonEl.onclick = function(){goBack5()};
+            document.getElementById("myDropdown").classList.remove("show");
+            //let health_condition = document.getElementById("symptom").value;
+            let health_condition = thisObj.getAttribute("data-value");
+            console.log(health_condition);
+            if(health_condition==""){
+                alert("Please enter a health condition.");
+                return;
+            }
+            console.log(health_condition);
+            document.getElementById("nursingNotes").classList.add("d-none");
+            document.getElementById("pathDetails1").classList.add("d-none");
+            document.getElementById("patientDetails").classList.add("d-none");
+            document.getElementById("PatientsClusterPage").classList.remove("d-none");
+            myPopup.classList.remove("show");
+            myPopup1.classList.remove("show");
+            let hc = thisObj.innerText.toLowerCase()
+            hc = hc.charAt(0).toUpperCase() + hc.slice(1);
+            if (hc.startsWith("Neg_")){
+                hc = "Negligible " + hc.split("_")[1];
+            }
+            document.getElementById("clustersPageHeading").textContent = hc;
+            
+            let PatientsClustersDropDownEl = document.getElementById("PatientsClustersDropDown");
+            PatientsClustersDropDownEl.innerHTML = "";
+            let mainDiv = document.getElementById("PatientsClusters");
+            mainDiv.textContent = "";
+            document.getElementById("myChart1").textContent = "";
+            document.getElementById("myChart2").textContent = "";
+            document.getElementById("PatientsClustersDropDown1").classList.add("d-none");
+            document.getElementById("radioButtons").classList.add("d-none");
+            
+            getHealthCluster(health_condition, file_path).then((data) => {
+                let cluster_d = data[0];
+                let stages_list = data[1];
+                // console.log(stages_list);
+                let temp_list = Object.keys(cluster_d);
+                if(temp_list.length === 0){
+                    mainDiv.textContent = "";
+                    let tempEl = document.createElement("h2")
+                    tempEl.textContent = "NO CLUSTERS FOR THE SELECTED HEALTH CONDITION";
+                    tempEl.style.textAlign = "center";
+                    tempEl.style.paddingTop  = "200px";
+                    mainDiv.appendChild(tempEl);
+                    return;
+                    
+                }
+                else{
+                    document.getElementById("PatientsClustersDropDown1").classList.remove("d-none");
+                    document.getElementById("radioButtons").classList.remove("d-none");
+                    mainDiv.textContent = "";
+                }
+                document.getElementById("barGraph").checked = true;
+                document.getElementById("myChart1").classList.remove("d-none");
+                document.getElementById("myChart2").classList.add("d-none");
+                //display count of patients vs stages
+                let barColors = ['#ea8e6e', '#767759', '#a7ece1', '#1d6a45', '#c6e0d4', '#14a8fb', '#140221', '#ea2145', '#d2ad60', '#9e4df7', '#3b5baa'];
+                //console.log(barColors);
+                let xValues = stages_list;
+                let yValues = [];
+                for(var i = 0; i<xValues.length; i++){
+                    if (cluster_d[xValues[i]] === undefined){
+                        yValues.push(0);
+                        continue;
+                    }
+                    yValues.push(cluster_d[xValues[i]].length);
+                }
+                
+                document.getElementById("myChart1").textContent = "";
+                let canvasEl =  document.createElement("canvas");
+                canvasEl.id = "myChartBar";
+                canvasEl.style.width = "100px";
+                canvasEl.style.height = "70px";
+                canvasEl.style.maxWidth = "1000px";
+                canvasEl.style.maxHeight = "700px";
+                document.getElementById("myChart1").appendChild(canvasEl);
+                new Chart("myChartBar", {
+                    type: "bar",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    },
+                    options: {
+                        legend: {display: false},
+                        title: {
+                            display: true,
+                            text: "Patients Count vs Stage",
+                            fontSize: 30,
+                            padding: 30
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    fontSize: 20,
+                                    
+                                },
+                                
+                            }],
+                            xAxes: [{
+                                ticks: {
+                                    fontSize: 20
+                                }
+                            }]
+                        },
+                        tooltips: {
+                            enabled: false
+                        },
+                        plugins: {
+                            datalabels: {
+                                color: 'black',
+                                anchor: 'end',
+                                align: 'end',
+                                font: {
+                                    weight: 'bold',
+                                    size: 25,
+                                }    
+                            }
+                        }
+                    }
+                });
+            
+                document.getElementById("myChart2").textContent = "";
+                let canvasEl1 =  document.createElement("canvas");
+                canvasEl1.id = "myChartPie";
+                canvasEl1.style.width = "100px";
+                canvasEl1.style.height = "100px";
+                canvasEl1.style.maxWidth = "800px";
+                canvasEl1.style.maxHeight = "800px";
+                document.getElementById("myChart2").appendChild(canvasEl1);
+                var options = {
+                    responsive: true,
+                    //maintainAspectRatio: false,
+                    title: {
+                            display: true,
+                            text: "Precentage of patients in each stage",
+                            fontSize: 30,
+                        },
+                    legend: {
+                        display: true,
+                        labels: {
+                            fontSize: 20,
+                        },
+                        onClick: function (e) {
+                            e.stopPropagation();
+                        },
+                    },
+                    tooltips: {
+                        enabled: false
+                    },
+                    plugins: {
+                        datalabels: {
+                            formatter: (value, ctx) => {
+                                let sum = 0;
+                                let dataArr = ctx.chart.data.datasets[0].data;
+                                dataArr.map(data => {
+                                    sum += data;
+                                });
+                                let percentage = (value*100 / sum).toFixed(0)+"%";
+                                if((value*100 / sum).toFixed(0) > 0){
+                                    return percentage;
+                                }
+                                return "";
+                                
+                            },
+                            color: 'brown',
+                            anchor: 'end',
+                            align: 'center',
+                            font: {
+                                weight: 'bold',
+                                    size: 20,
+                                }  
+                        }
+                    }
+                };
+                var ctx = document.getElementById("myChartPie").getContext('2d');
+                Chart.NewLegend = Chart.Legend.extend({
+                                            afterFit: function() {
+                                                this.height = this.height + 50;
+                                            },
+                                    });
+                new Chart("myChartPie", {
+                    type: "pie",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    },
+                    options: options,
+                    plugins: [{
+                        beforeInit: function(chart, options) {
+                            chart.legend.afterFit = function() {
+                            this.height += 30; // must use `function` and not => because of `this`
+                            };
+                        },
+                    }]
+                });
+                
+                //drop down
+                PatientsClustersDropDownEl.onchange = function(){showHealthCluster(cluster_d)};
+                let optionEl1 = document.createElement("option");
+                optionEl1.value=temp_list[0];
+                optionEl1.innerHTML= temp_list[0];
+                optionEl1.selected=true;
+                PatientsClustersDropDownEl.appendChild(optionEl1);
+                for (var i = 1; i < temp_list.length; i++) {
+                    if(cluster_d[temp_list[i]].length<=0){
+                        continue;
+                    }
+                    let optionEl = document.createElement("option");
+                    optionEl.value=temp_list[i];
+                    optionEl.innerHTML= temp_list[i];
+                    PatientsClustersDropDownEl.appendChild(optionEl);
+                }
+                showHealthCluster(cluster_d);
+            });
+        }
+        function showHealthCluster(cluster_d){
+            let stageVal = document.getElementById("PatientsClustersDropDown").value;
+            let mainDiv = document.getElementById("PatientsClusters");
+            mainDiv.textContent = "";
+            if (cluster_d[stageVal].length>0){
+                let div1 = document.createElement("div");
+                div1.style.textAlign = "center";
+                let headingEl = document.createElement("h1");
+                headingEl.style.textAlign = "center";
+                headingEl.style.fontWeight = "bold";
+                headingEl.classList.add("mb-3")
+                headingEl.textContent = stageVal + " "+ "Cluster";
+                div1.appendChild(headingEl);
+                let para = "";
+                for (var i = 0; i<cluster_d[stageVal].length; i++){
+                    let div2 = document.createElement("button");
+                    if(i<cluster_d[stageVal].length-1){
+                        para = para+cluster_d[stageVal][i]+";  ";
+                    }
+                    else{
+                        para = para+cluster_d[stageVal][i];
+                    }
+                    div2.textContent = cluster_d[stageVal][i];
+                    div2.classList.add("mr-3", "mb-3", "p-3");
+                    div2.style.fontSize = "25px";
+                    div2.style.borderRadius = "50%";
+                    div2.style.borderWidth = "0px";
+                    div2.style.boxShadow = "0px 0px 10px #999999";
+                    div2.style.color = "white";
+                    div2.style.backgroundColor = "blue";
+                    div2.style.textAlign = "center";
+                    div2.disabled = true;
+                    div1.appendChild(div2);
+                }
+                mainDiv.appendChild(div1);
+                let newLineEl = document.createElement("br");
+                mainDiv.appendChild(newLineEl);
+            }
+        }
+        
+        var radios = document.getElementsByName('fav_language');
+        for(var i = 0; i<radios.length; i++){
+            radios[i].addEventListener('click', (ev) => {
+            const selectClass1 = document.getElementById('myChart1').classList;
+            const selectClass2 = document.getElementById('myChart2').classList;
+            if (ev.target.checked && ev.target.value === 'Bar Graph') {
+                if (selectClass1.contains('d-none')) selectClass1.remove('d-none')
+                selectClass2.add('d-none');
+            }
+            else if (ev.target.checked && ev.target.value === 'Pie Chart') {
+                if (selectClass2.contains('d-none')) selectClass2.remove('d-none')
+                selectClass1.add('d-none');
+            }
+            })
+        }
+        
+        function fetchCondition(row1, idx) {
+            return fetch('list_of_health_conditions.json') 
+                    .then((response) => {
+                        return response.json().then((data) => {
+                            var jsonData = data;
+                            let arr = [];
+                            for(var i = idx; i<idx+1; i++){
+                                if (row1[`day_${i}`]===""){
+                                    break;
+                                }
+                                if(row1[`day_${i}`] === "$$"){
+                                    arr.push(["No health conditions extracted."]);
+                                }
+                                else{
+                                    let new_rows = row1[`day_${i}`].split("#");
+                                    let temp = [];
+                                    
+                                    for (var k = 0; k < new_rows.length; k++) {
+                                        let f = 1;
+                                        if (new_rows[k].startsWith("neg_")) {
+                                            let new_row = new_rows[k].split("_")[1];
+                                            for (var j = 0; j < Object.keys(jsonData).length; j++) {
+                                                var row = jsonData[j];
+                                                if (row["UMLS_ID"] == new_row) {
+                                                    f = 0;
+                                                    temp.push("neg_"+row["Health_condition"]);
+                                                }
+                                            }
+                                            
+                                        } 
+                                        else {
+                                            let new_row = new_rows[k];
+                                            for (var j = 0; j < Object.keys(jsonData).length; j++) {
+                                                var row = jsonData[j];
+                                                if (row["UMLS_ID"] == new_row) {
+                                                    f=0;
+                                                    temp.push(row["Health_condition"]);
+                                                }
+                                            }
+                                        
+                                        }
+                                        if(f){
+                                            temp.push("");
+                                        }
+                                    }
+                                    arr.push(temp);   
+                                }
+                                
+                            }
+			                // console.log(arr);
+                            return arr;
+                        }).catch(error => console.error('Error:', error))});
+        }
+    </script>
+</body>
+
+</html>
